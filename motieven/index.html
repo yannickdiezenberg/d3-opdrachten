@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)http://demo.edriessen.nl/d3-donut-reuse-function/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        <link rel="stylesheet" title="stylesheet" type="text/css" href="src-motieven/style.css" media="all">
+        <script type="text/javascript" src="src-motieven/d3.js"></script><style type="text/css"></style>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <style>[touch-action="none"]{ -ms-touch-action: none; touch-action: none; }[touch-action="pan-x"]{ -ms-touch-action: pan-x; touch-action: pan-x; }[touch-action="pan-y"]{ -ms-touch-action: pan-y; touch-action: pan-y; }[touch-action="scroll"],[touch-action="pan-x pan-y"],[touch-action="pan-y pan-x"]{ -ms-touch-action: pan-x pan-y; touch-action: pan-x pan-y; }</style></head>
+    <body>
+        <a class="all">Alles</a>
+    <div id="uitleg"><h2>Motieven van moorden uit de jaren 2008 t/m 2011</h2></div>
+    <div id="donut1" class="donut"><h1>2008</h1></div>
+    <div id="donut2" class="donut"><h1>2009</h1></div>
+    <div id="donut3" class="donut"><h1>2010</h1></div>
+    <div id="donut4" class="donut"><h1>2011</h1></div>
+        <script type="text/javascript">
+        var data1 = [3, 12, 15, 7, 2, 13];
+            data2 = [6, 15, 20, 13, 9, 15];
+            data3 = [10, 17 ,19 ,8 ,4 ,6];
+            data4 = [4, 13 ,13 ,17 ,1 ,14];
+            motieven = ["Overval, beroving", "Huiselijke omstandigheden", "Ruzie, geen huiselijke omstandigheden", "Criminelen onderling", "Geen motief", "Overig motief van moord en doodslag", "Onbekend motief van moord en doodslag"];
+           
+         
+            for ( var i = 0; i < motieven.length; i++ ) {
+	            	$('a').eq( i ).append( '<div><a class="color">' + motieven[i] + "</a></div>" );
+	            }           
+        /*   
+            
+        $.each(data1, function(i){
+            $('body').append('<a class="color'+i+'">"motieven[i]</a>');
+        });
+        */
+        
+        function makeDonut(container, dataSet, size, radius, innerRadius){
+        var w = size,
+            h = size,
+            r = radius,
+            ir = innerRadius,
+            color = d3.scale.category20c().domain([3, 12, 15, 7, 2, 13]).range(["#2e0606", "#3d0909", "#6c1919", "#9e2828", "#d43b3b", "#ff4949"]),
+            donut = d3.layout.pie().sort(null),
+            arc = d3.svg.arc().innerRadius(ir).outerRadius(r);
+        
+        var svg = d3.select(container).append("svg:svg")
+            .attr("width", w)
+            .attr("height", h)
+            .append("svg:g")
+            .attr("transform", "translate(" + w / 2 + "," + h / 2 + ")");
+        
+        var arcs = svg.selectAll("path")
+            .data(donut(dataSet))
+              .enter().append("svg:path")
+                .attr("fill", function(d, i) { return color(i); })
+                .attr("class", function(d, i) { return "color"+i; })
+                .attr("d", arc)
+                .each(function(d) { this._current = d; });
+            
+        // Labels
+         
+            
+        arcs.append("text")
+                .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+                .attr("dy", ".35em")
+                .style("text-anchor", "middle")
+                .text(function(d) { console.log(d); return d.value; });
+            
+        
+        }    
+        
+        
+        
+            
+            
+        makeDonut('#donut1', data1, 300, 150, 50);
+        makeDonut('#donut2', data2, 300, 150, 50);
+        makeDonut('#donut3', data3, 300, 150, 50);
+        makeDonut('#donut4', data4, 300, 150, 50);
+                
+                
+        $('a').click(function(){
+            var currentClass = $(this).attr('class');
+            if (currentClass == 'all'){
+                $('path').attr('opacity', 1);
+            } else {
+                $('path').attr('opacity', 0.5);
+                $('path.'+currentClass).attr('opacity', 1);
+            }
+        });
+        // Labels    
+        
+            
+            </script>
+          
+        
+        
+    
+</body></html>

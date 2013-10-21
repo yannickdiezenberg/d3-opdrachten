@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<!-- saved from url=(0031)http://demo.edriessen.nl/d3005/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        <link rel="stylesheet" title="stylesheet" type="text/css" href="./src/style.css" media="all">
+        <script type="text/javascript" src="./src/jquery.min.js"></script><style type="text/css"></style>
+        <script type="text/javascript" src="./src/d3.js"></script>
+    </head>
+    <body>
+  
+    <div id="donut"></div>
+    <div id="titel"><h1>Linker koffiemachine vs. rechter koffiemachine</h1></div>
+        <div id="legenda">
+	    <table border="2">
+		    <tr>
+			    <td><div id="kleur1"></div></td>
+			    <td>Koffie</td>
+		   </tr>
+		   <tr>
+			   <td><div id="kleur2"></td>
+			   <td>Espresso</td>
+		  </tr>
+		  <tr>
+			   <td><div id="kleur3"></td>
+			   <td>Cappuccino</td>
+		  </tr>
+		  <tr>
+			   <td><div id="kleur4"></td>
+			   <td>Warme Choco</td>
+		  </tr>
+		  <tr>
+			   <td><div id="kleur5"></td>
+			   <td>Warm Water</td>
+		  </tr>
+		  <tr>
+			   <td><div id="kleur6"></td>
+			   <td>Overig</td>
+		  </tr>
+</table>
+    </div>
+    <div id="wissel">
+    	<a id="linker">Linker automaat</a>
+    	&nbsp;
+    	<a id="rechter">Rechter automaat</a>
+    </div>
+
+        <script type="text/javascript">
+        var data_a = [63, 36, 31, 9, 0, 9],
+            data_b = [134, 88, 31, 4, 2, 20],
+            labels = ["Koffie", "Espresso", "Cappuccino", "Warme Choco", "Warm Water", "Overig"]
+            data = data_a;
+        
+        var w = 400,
+            h = 400,
+            r = 200,
+            ir = 100,
+            color = d3.scale.category20c().domain([0, 1, 2, 3, 4, 5]).range(["#2a1f15", "#a46400", "#dfbe82", "#a47d60", "#7fc7f0", "#d9d9d9"]),            			donut = d3.layout.pie().sort(null),
+            arc = d3.svg.arc().innerRadius(ir).outerRadius(r);
+        
+        var svg = d3.select("#donut").append("svg:svg")
+            .attr("width", w)
+            .attr("height", h)
+          .append("svg:g")
+            .attr("transform", "translate(" + w / 2 + "," + h / 2 + ")");
+        
+        var arcs = svg.selectAll("path")
+            .data(donut(data))
+              .enter().append("svg:path")
+                .attr("fill", function(d, i) { return color(i); })
+                .attr("d", arc)
+                .each(function(d) { this._current = d; });
+     
+
+        $("#linker").css("cursor", "pointer" ).click(function(){
+       	 	$("#rechter").css("color", "black")
+        	$(this).css("color", "red")
+            data = data_a; // swap the data
+            arcs = arcs.data(donut(data)); // recompute the angles and rebind the data
+            arcs.transition().duration(2000).attrTween("d", arcTween); // redraw the arcs
+        });
+        
+        $("#rechter").css("cursor", "pointer").click(function(){
+            $("#linker").css("color", "black")
+            $(this).css("color", "red")
+            data = data_b; // swap the data
+            arcs = arcs.data(donut(data)); // recompute the angles and rebind the data
+            arcs.transition().duration(2000).attrTween("d", arcTween); // redraw the arcs
+        });
+        
+        
+        function arcTween(a) {
+          var i = d3.interpolate(this._current, a);
+          this._current = i(0);
+          return function(t) {
+            return arc(i(t));
+          };
+        }
+        
+            </script>
+          
+    
+</body></html>
